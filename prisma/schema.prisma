@@ -11,3 +11,27 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum OrderStage {
+  PENDING_DESIGN @map("Pending Design")
+  AWAITING_APPROVAL @map("Awaiting Approval")
+  PRINTING @map("Printing")
+  FRAMING @map("Framing")
+  PACKAGING @map("Packaging")
+  READY_FOR_PICKUP @map("Ready For Pickup")
+  DELIVERED @map("Delivered")
+}
+
+model Order {
+  id String @id @default(uuid())
+  customerName String
+  phone String
+  product String
+  stage OrderStage @default(PENDING_DESIGN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerName])
+  @@index([phone])
+  @@index([stage])
+}
