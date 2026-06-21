@@ -2,15 +2,12 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    "rootDirs": [
-      "./src",
-      "./generated"
-    ],
+    "rootDir": "./src",
     "outDir": "./dist",
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "Bundler",
     "target": "ES2023",
     "types": [],
     // "ignoreDeprecations": "6.0",
@@ -36,7 +33,7 @@
     // "noPropertyAccessFromIndexSignature": true,
     // Recommended Options
     "strict": true,
-    "jsx": "react-jsx",
+
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
