@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
+      # Spin up a temporary Postgres instance for integration/schema testing
       postgres:
         image: postgres:15-alpine
         env:
@@ -24,7 +25,6 @@ jobs:
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
-          --health-history 3
 
     steps:
       - name: Checkout Code
