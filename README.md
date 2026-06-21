@@ -1,13 +1,7 @@
 # BizopdAssignment
 
-A REST API for managing production orders through a linear stage pipeline. Built with **Node.js**, **TypeScript**, **Express**, **PostgreSQL** (via Prisma), and **Redis**.
-
----
-
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
 | Runtime | Node.js v22 |
 | Language | TypeScript |
 | Framework | Express 5 |
@@ -81,16 +75,6 @@ You should see:
 ```
 Redis is connected
 Server is running on http://localhost:3000
-```
-
----
-
-## Order Stage Pipeline
-
-Orders move through the following stages **in order** — skipping or going backwards is not allowed:
-
-```
-PENDING_DESIGN → AWAITING_APPROVAL → PRINTING → FRAMING → PACKAGING → READY_FOR_PICKUP → DELIVERED
 ```
 
 ---
@@ -211,39 +195,6 @@ Returns aggregate counts. Response is **cached in Redis for 60 seconds**.
 
 ---
 
-## Testing the APIs (curl)
-
-### Create an order
-```bash
-curl -X POST http://localhost:3000/api/orders \
-  -H "Content-Type: application/json" \
-  -H "Idempotency-Key: $(uuidgen)" \
-  -d '{
-    "customerName": "Seyi Thatti",
-    "phone": "09044281985",
-    "product": "Black frame 20x30"
-  }'
-```
-
-### Advance the order to the next stage
-```bash
-curl -X PATCH http://localhost:3000/api/orders/<order-id>/stage \
-  -H "Content-Type: application/json" \
-  -H "Idempotency-Key: $(uuidgen)" \
-  -d '{ "newStage": "AWAITING_APPROVAL" }'
-```
-
-### Search orders
-```bash
-curl http://localhost:3000/api/orders?search=Seyi
-```
-
-### Get dashboard stats
-```bash
-curl http://localhost:3000/api/dashboard
-```
-
----
 
 ## Idempotency
 
@@ -282,3 +233,19 @@ curl -X POST http://localhost:3000/api/orders \
 | `npx prisma studio` | Open Prisma's visual DB browser |
 | `npx prisma migrate dev` | Run pending migrations |
 | `npx prisma generate` | Re-generate Prisma client |
+
+---
+
+## Additional Question
+
+**Question:** Assume this application now manages 2 million orders and the /dashboard endpoint takes 7 seconds to load.
+
+Without changing the API response, what improvements would you make to improve performance and scalability?
+
+**Answer:**
+The actual cause is that the database is running three separate count queries against the full orders table on every dashboard load.
+I had to make some research on how to actually implement this. So first off i would implement Database Indexing, that is by adding B-Tree indexes to the columns frequently used in filtering and searching: stage, customerName, and phone.
+For the dashboard, postgres can perform an index only Scan, counting rows directly from the lightweight index structure in memory without touching the heavy table data on disk.
+Next is to implement Advanced Redis Management, by switching from a time-based expiration to a Background Cache Worker pattern (or use the XFetch algorithm).
+Lastly, Instead of asking PostgreSQL to recalculate the state of 2 million orders every time a cache miss occurs, calculate it ahead of time. That is by Creating a Materialized View in PostgreSQL that acts as a cached table specifically holding pre-computed stats.
+There are still other ways to improve performance and scalability, but these are the ones that I understand.
