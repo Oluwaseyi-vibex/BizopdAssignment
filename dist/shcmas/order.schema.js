@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { OrderStage } from '../../generated/prisma/client';
+import { OrderStage } from '@prisma/client';
 const orderStages = Object.values(OrderStage);
 export const createOrderSchema = z.object({
     body: z.object({

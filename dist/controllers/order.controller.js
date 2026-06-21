@@ -1,7 +1,7 @@
 import { prisma } from '../lib/prisma.js';
 import { redisClient } from '../lib/redis.js';
 import { validateStageTransition } from '../config/stages.js';
-import { OrderStage } from '../../generated/prisma/client';
+import { OrderStage } from '@prisma/client';
 import { AppError } from '../middleware/error.middleware.js';
 const CACHE_KEY = 'dashboard:stats';
 // POST /api/orders

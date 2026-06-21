@@ -1,4 +1,4 @@
-import { OrderStage } from '../../generated/prisma/client';
+import { OrderStage } from '@prisma/client';
 export declare const STAGE_ORDER: OrderStage[];
 export declare function validateStageTransition(current: OrderStage, next: OrderStage): {
     valid: boolean;

@@ -1,4 +1,4 @@
-import { OrderStage } from '../../generated/prisma/client';
+import { OrderStage } from '@prisma/client';
 export const STAGE_ORDER = [
     OrderStage.PENDING_DESIGN,
     OrderStage.AWAITING_APPROVAL,

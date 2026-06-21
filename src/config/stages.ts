@@ -1,4 +1,4 @@
-import { OrderStage } from '../../generated/prisma/client';
+import { OrderStage } from '@prisma/client';
 
 export const STAGE_ORDER: OrderStage[] = [
     OrderStage.PENDING_DESIGN,
